@@ -1,0 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Solution solution = new Solution();
+		Console.WriteLine("Result: "+ solution.reverseString("hello"));
+	}
+}
+
+class Solution
+{
+	public string reverseString(string s)
+	{
+		char[] charArray = s.ToCharArray();
+		Array.Reverse(charArray);
+		string reverse = new string(charArray);
+		return reverse;
+	}
+}
