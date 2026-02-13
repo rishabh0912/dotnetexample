@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Solution solution = new Solution();
+		int[] nums = {1,2,3,4,5,6,7,8,9,10,7,8};
+		var result  = solution.duplicateNumbers(nums);
+		foreach(var item in result)
+		{
+			Console.WriteLine($"Number: {item.Number}, Count: {item.Count}");;
+			
+		}
+	}
+}
+
+class Solution
+{
+	public List<(int Number, int Count)> duplicateNumbers(int[] nums)
+	{
+		var res = nums
+			.GroupBy(x => x)
+			.Select(g => (Number: g.Key, Count: g.Count()))
+			.ToList();			
+		return res;
+	}
+}
