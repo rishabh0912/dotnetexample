@@ -1,0 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Solution solution = new Solution();
+		int[] nums = {1,2,8,76,22,111};
+		int n = solution.maxInArray(nums);
+		Console.WriteLine(n);
+	}
+}
+
+class Solution
+{
+	public int maxInArray(int[] nums)
+	{
+		return nums.Max();		
+		
+	}
+}
