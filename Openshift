@@ -1,0 +1,22 @@
+Sample Answer:
+
+“In our setup, we use Azure Pipelines for our CI/CD process. When a developer commits code, the pipeline is triggered. As part of the build stage, we use Docker to build the application image. This image is then pushed to JFrog Artifactory, which acts as our container registry.
+
+For the deployment part, we use Terraform to manage our OpenShift resources. The Kubernetes/OpenShift manifest files—like Deployments, Services, ConfigMaps, etc.—are defined as code and stored in the repo. Terraform picks these up during the pipeline run and applies them to our OpenShift cluster.
+
+So, the actual deployment to OpenShift happens when Terraform applies those manifests, which reference the Docker image stored in Artifactory. This entire process is automated as part of the release stage in Azure Pipelines.
+
+This ensures a fully automated CI/CD pipeline with infrastructure as code and containerized deployments.”
+
+⸻
+
+Breakdown of Key Points to Include:
+	•	CI/CD tool: Azure Pipelines
+	•	Image creation: Docker
+	•	Image storage: JFrog Artifactory
+	•	Infra as code & deployment: Terraform
+	•	Target platform: OpenShift
+	•	Manifest handling: Kubernetes/OpenShift YAML files
+	•	Automation: Fully handled in pipeline
+
+Would you like a shorter version or one tailored more to a DevOps vs developer perspective?
