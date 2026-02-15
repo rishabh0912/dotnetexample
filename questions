@@ -15,6 +15,16 @@ Large Payloads - Compression, pagination, Graphql
 Thread starvation - async/await, bulkahead pattern
 Lock contention - sharding
 
+Question 1a
+How to improve performance of an API
+- Database Optimization - Eager Loading - Add Indexes
+- Caching - Cache Warming
+- Parallel Execution (Sequential -> Parallel)
+- Response Compression
+- Pagination
+- Async I/O
+- Database Connection Pooling
+
 Question 2
 How do you handle high traffic spikes like Black Friday
 1. HPA - Horizontal Pod Autoscalar - min - 10, max - 100
