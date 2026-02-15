@@ -1,0 +1,79 @@
+Question 1
+Your microservices API is slow how do you identify bottlenecks
+1. Establish baseline metrices - RED
+   Use RED Method
+   Rate - Request per second
+   Errors - Error rate
+   Duration - Response Time (p50,p95,p99)
+2. Distributed tracing
+   OpenTelemetry will show each service how much time it is taking
+3. Identify the rootcause
+Databse queries - Indexes, Query Optimization, Connection Pooling
+N+1 Queries - Eager Loading
+Service to Service Calls - Caching, async, parallelization
+Large Payloads - Compression, pagination, Graphql
+Thread starvation - async/await, bulkahead pattern
+Lock contention - sharding
+
+Question 2
+How do you handle high traffic spikes like Black Friday
+1. HPA - Horizontal Pod Autoscalar - min - 10, max - 100
+2. Queue Based load levelling - we can use queues
+3. Rate Limiter - sliding window algo
+4. CDN for static assets
+5. DB Scaling - Read replica, connection pool - normal 100 blackfriday 500
+6. Muti layer caching - In Memory, Redis, CDN
+7. Circuit Breaker and fallback
+8. Monitoring and Alert
+9. Graceful degradation
+
+Question 3
+Database request 1000/sec but DB can handle only 100/sec
+ways for that
+- Cache reads
+- Read replica
+- Connection pooling
+- Async processing
+- Batch operation
+- Query optimization
+- Sharding
+- CQRS
+
+Question 4
+Network Latency Optimization
+- Reduce round trips - Use Batch APIs
+- Conection Pooling and keep-alive
+- Response compression
+- Payload Optimization - DTOs
+- Caching
+- Regional Deployment
+- Timeout and Circuit Breaker
+
+Question 5
+Load Testing
+- Smoke Test (normal 1->5->10)
+- Load test (1000)
+- Stress Test (test till overload error)
+- Spike Test (sudden increase in traffic)
+- Soak test (endurance - stability over time)
+- Used K6 and JMeter
+
+Question 6
+Caching
+- Multilayer Cache
+  - Layer 1 - Browser/Client cache
+  - Layer 2 - CDN
+  - Layer 3 - Application Cache (In Memory -  Frequently access data in RAM)
+  - Layer 4 - Distributed Cache (REDIS)
+  - Layer 5 - DB Query Cache
+- Caching Patterns
+  - Cache Aside (Miss-Hit)
+  - Read Through (Cache automatically loads from DB)
+  - Write Through (Write to Cache and DB simultaneously)
+  - Write behind (Write to cache first and then DB (async))
+  - Refresh ahead (Pro-actively refresh cache before expiry)
+- Cache Invalidation Strategies
+  - TTL 
+  - Event-Based (Invalidate on data-change)
+  - Tag Based (Invalidate on tag - bulk invalidation)
+  - Version Based (version get rolled back once new version is updated - no explicit invalidation)
