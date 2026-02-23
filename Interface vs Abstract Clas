@@ -1,0 +1,39 @@
+Interface - 
+
+public interface IPaymentService
+{
+	void ProcessPayment();
+}
+
+public class CreditCardPayment:IPaymentService
+{
+	public void ProcessPayment(){
+		Console.WriteLine("Print");
+	}
+}
+
+Abstract Class
+Shared Logic -> LogPayment
+Mandatory Override -> ProcessPayment
+Base class reference → Child object → Calls overridden method
+
+PaymentService payServ = new CreditCardPayment();
+payServ.ProcessPayment();
+
+
+public abstract class PaymentService
+{
+	public void LogPayment
+	{
+		Console.WriteLine("Log");
+	}
+	public abstract void ProcessPayment();
+}
+
+public class CreditCardPayment:PaymentService
+{
+	public override void ProcessPayment()
+	{
+		Console.WriteLine("ProcessPay");
+	}
+}
