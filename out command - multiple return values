@@ -1,0 +1,17 @@
+using System;
+
+class Program {
+	static void Main(string[] args){
+		int add = 0;
+		int sub = 0;
+		mathsl(5,4,out add, out sub);
+		Console.WriteLine("add " + add);
+		Console.WriteLine("sub " + sub);		
+			
+	}
+	
+	static void mathsl(int a, int b, out int add, out int sub){
+		add = a + b;
+		sub = a - b;
+	}
+}
