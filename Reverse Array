@@ -1,0 +1,33 @@
+using System;
+					
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		Reverse rs = new Reverse();
+		int[] nums = [0,1,2,3,5];
+		int[] newnum = rs.ReverseArray(nums);
+		foreach(var i in newnum)
+		{
+			Console.WriteLine(i);
+		}
+	}
+}
+
+
+public class Reverse
+{
+	public int[] ReverseArray(int[] nums)
+	{
+		int len = nums.Length;
+		int[] newnums = new int[len];
+		int j = 0;
+		for(int i=(nums.Length); i>0; i--)
+		{
+			newnums[j] = nums[i-1];
+			j++;
+		}
+		return newnums;
+	}
+}
