@@ -1,0 +1,21 @@
+Stack
+Stack is region of memory that follows Last In, First Out (LIFO) principle.
+It is used for storing local variables and managing function calls.
+When a method is called a stack frame is created, containing information such as method's parameter, local variables and
+return address. 
+As the method completes stack frame is popped off the stack, releasing the allocated memory.
+
+Characteristics
+- Fast allocation and de-allocation
+- Limited Size - exceeding the limit gives stack overflow
+- Automatic Management
+
+Heap
+Heap is a region of memory, that follows no particular order, and memory allocation and de-allocation are not straight forward
+The heap is used for dynamic memory allocation, where the size and lifetime of variables are not known at
+compile time.
+
+Characteristics
+- Dynamic size - size of the memory is allocated at runtime
+- Slower allocation and deallocation
+- Manual Management
