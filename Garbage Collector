@@ -1,0 +1,49 @@
+Managed Code
+  - Code whose execution is managed by runtime - CLR - Common Language Runtime  
+  - CLR - Take Managed code -> Compile it into machine code (IL)  -> Execute it (JIT)
+  - Code runs under the control of CLR
+  - CLR handles
+    - Memory allocation
+    - Garbage Collection
+    - Exception Handling
+    - Type Safety
+    - Security
+    - Thread Management
+      string str = "Rishabh";
+      - Memory is allocated on heap
+      - GC cleans it automatically
+      - CLR ensures safety
+
+Unmanaged Code
+  - C/C++ code
+  - Programmer is in-charge of everything
+  - Code that runs outside CLR control
+    - Examples
+      - Native C/C++
+      - Windows API
+      - Old COM libraries
+      - OS-Level libraries
+  - Manually manage the memory
+  - No GC
+  - No CLR safety gurantees
+
+CLR allows passing boundaries between managed and unmanaged world. like .NET can call Native C/C++ code or C/C++ can call .NET
+C# allows you to use unmanaged constructs such as pointers using unsafe context. Normally C# does not allow pointer usage like C++
+But if we write
+```csharp
+unsafe
+{
+  int x = 10;
+  int* ptr = &x;
+```
+Above we are using raw memory address. CLR safety checks are bypassed and you must enable unsafe compilation.
+
+When managed code calls unmanaged code using interop, execution crosses the CLR boundary.
+At that point, memory management and execution control are handled by unmanaged runtime, 
+meaning GC does not track allocations there. 
+This introduces risks like memory leaks and access violations, so such calls must be carefully handled.
+
+If you allocate unmanaged memory:
+IntPtr ptr = Marshal.AllocHGlobal(100);
+We should manually free it like below, else memory leak
+Marshal.FreeHGlobal(ptr);
