@@ -4,6 +4,10 @@ It is used for storing local variables and managing function calls.
 When a method is called a stack frame is created, containing information such as method's parameter, local variables and
 return address. 
 As the method completes stack frame is popped off the stack, releasing the allocated memory.
+What is stored - 
+Value Types
+Refrence variables(refrence goes on stack and object goes on heap)
+Return address is also stored.
 
 Characteristics
 - Fast allocation and de-allocation
