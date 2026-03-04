@@ -1,0 +1,74 @@
+string a = "Test";
+string b = "Test";
+
+CLR does this:
+	1.	Checks string intern pool
+	2.	If "Test" already exists → reuse it
+	3.	If not → create it and store in intern pool
+
+So memory looks like:
+
+Stack:                 Heap (Intern Pool):
+------                 -------------------
+a  ────────────────►   "Test"
+b  ────────────────►   "Test"
+
+Yes, wherever the literal value is same, they all point to one heap object (interned), not separate ones.
+
+a += b does not mutate the string. It creates a new string instance and reassigns the reference.
+
+a ───► "Test"
+a += b;
+
+Old: "Test"       (unchanged)
+New: "TestTest"
+
+a ───► "TestTest"
+
+string a = new string("hello world".ToCharArray());
+string b = new string("hello world".ToCharArray());
+
+Because new explicitly tells CLR: “Create a new object.”
+Interning only happens automatically for string literals, not for new string(...)
+
+Intern pool exists to:
+	•	Reduce duplicate string memory
+	•	Improve performance
+	•	Make reference comparisons faster
+
+But CLR does NOT automatically intern dynamically created strings because:
+	•	It costs lookup time
+	•	Not always beneficial
+	•	Could increase memory pressure
+
+
+StringBuilder
+
+When Is StringBuilder Better?
+
+✅ Inside loops
+✅ Large concatenations
+✅ Unknown final size
+✅ High-performance systems
+✅ Logging frameworks
+✅ JSON building
+
+var sb = new StringBuilder();
+for(int i = 0; i < 10000; i++)
+{
+    sb.Append(i);
+}
+string result = sb.ToString();
+
+With string +=
+Each step:
+""
+"0"
+"01"
+"012"
+"0123"
+Each is a new object
+
+With StringBuilder
+Buffer: [0][1][2][3]...
+Just grows internal array when needed.
