@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+					
+public class Program
+{
+	public static void Main()
+	{
+		TwoSumArray ts = new TwoSumArray();
+		int[] nums = [2,9,7,3];
+		int sum = 11;
+		int[] newNums = new int[2];
+		newNums = ts.TwoSum(nums, sum);
+		Console.WriteLine("Hello World");
+		foreach(var i in newNums)
+		{
+			Console.WriteLine(i);
+		}
+	}
+}
+
+class TwoSumArray
+{
+	public int[] TwoSum(int[] nums, int sum)
+	{
+		int[] numArray = new int[2];
+		Dictionary<int, int> dict = new Dictionary<int, int>();
+		int num2 = 0;
+		for(int i=0; i<nums.Length; i++)
+		{
+			num2 = sum - nums[i];
+			if(dict.ContainsKey(num2))
+			{
+				numArray[0] = i;
+				numArray[1] = dict[num2];
+			}
+			else
+			{
+				dict.Add(nums[i],i);
+			}
+		}
+		foreach(var i in dict)
+		{
+			Console.WriteLine($"value: {i.Value}");
+			Console.WriteLine($"key: {i.Key}");	
+		}
+		return numArray;
+	}
+}
