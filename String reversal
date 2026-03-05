@@ -1,0 +1,28 @@
+using System;
+					
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		ReverseString rs = new ReverseString();
+		Console.WriteLine(rs.Reverse("abcd"));		
+	}
+}
+
+class ReverseString
+{
+	public string Reverse(string svalue)
+	{
+		char[] newChar = svalue.ToCharArray();
+		char[] newStrChar = new char[newChar.Length];
+		int len = newChar.Length;
+		for(int i=0; i<newChar.Length; i++)
+		{			
+			newStrChar[i] = newChar[len-1];
+			len--;
+		}
+		string newString = new string(newStrChar);
+		return newString;
+	}
+}
