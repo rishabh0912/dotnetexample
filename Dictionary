@@ -1,0 +1,173 @@
+Dictionary is a generic collection - because we specify the type of value and key at compile time
+Dictionary<int, string>
+Key Type = int
+Value Type = string
+
+1. How a Dictionary Works Internally
+	•	A Dictionary<TKey, TValue> stores data using a hash table.
+	•	When you add a key:
+	1.	GetHashCode() of the key is calculated.
+	2.	That hash is used to determine a bucket index.
+	3.	The key-value pair is stored in that bucket.
+Example 
+dict[p1] = "First";
+
+Flow
+p1.GetHashCode() → hash value
+hash % bucketCount → bucket index
+store key-value in that bucket
+
+2. What Happens During Lookup
+When you call
+dict.ContainsKey(p2)
+Dictionary does:
+	1.	Compute p2.GetHashCode() -> this is generic function
+	2.	Go to that bucket
+	3.	Compare keys in that bucket using Equals()
+So
+Step 1: hash match → bucket
+Step 2: Equals() → actual key match
+
+3. Role of GetHashCode() vs Equals()
+
+GetHashCode()
+	•	Determines which bucket to search
+	•	Must be same for equal objects
+
+Equals()
+	•	Determines if two keys are actually equal
+
+Interview line:
+
+HashCode narrows the search to a bucket, Equals confirms the exact key.
+
+4. Default Behavior (No Override)
+
+If you don’t override anything:
+	•	GetHashCode() → based on object identity
+	•	Equals() → reference equality
+Meaning
+Person p1 = new Person();
+Person p2 = new Person();
+Even if data is same
+p1 != p2
+because they are different objects in heap.
+
+5. Your Special Case
+You wrote
+public override bool Equals(object obj)
+{
+    return true;
+}
+
+Meaning:
+
+Every object is equal to every other object.
+
+But since:
+GetHashCode() = base.GetHashCode()
+
+each object gets a different bucket, so the dictionary never even compares Equals.
+
+Result:
+dict.ContainsKey(p2) → false
+because it searches a different bucket.
+
+6. What “Dictionary Breaks” Means
+
+Example:
+Person p = new Person { Name="A" };
+dict[p] = "First";
+
+p.Name = "B";
+If GetHashCode() uses Name, then:
+Old hash = based on "A"
+New hash = based on "B"
+
+Dictionary stored the object in the old bucket, but lookup now goes to the new bucket.
+
+Result:
+dict.ContainsKey(p) → false
+Even though the object exists inside dictionary.
+
+This is what we mean by:
+
+The dictionary becomes inconsistent or “breaks”.
+
+7. Important Rule (Interview Gold)
+
+Keys in a dictionary must be immutable.
+
+Example of good keys:
+	•	string
+	•	int
+	•	immutable objects
+
+Bad keys:
+class Person
+{
+   public string Name;  // mutable
+}
+Better
+class Person
+{
+   public readonly string Name;
+}
+
+Dictionary in C# is implemented using a hash table. When a key is added, its GetHashCode() determines the bucket where it is stored. 
+During lookup, the dictionary computes the hash again to locate the bucket and then uses Equals() to find the exact key.
+If GetHashCode() and Equals() are inconsistent, lookups can fail. 
+Also, dictionary keys should be immutable because changing a key’s state can change its hash and make the entry unreachable.
+
+
+
+using System;
+using System.Collections.Generic;
+					
+public class Program
+{
+	public static void Main()
+	{
+		Dictionary<string, int> dict = new Dictionary<string, int>();
+		dict.Add("apple",19);
+		dict.Add("oranges",20);
+		
+		foreach(var item in dict)
+		{
+			Console.WriteLine($"Value is {item.Value}");
+			Console.WriteLine($"Value is {item.Key}");
+			Console.WriteLine($"Value is {item.Key.GetHashCode()}");
+		}
+		Console.WriteLine("Hello World");
+		Person p1 = new Person();
+		Person p2 = new Person();
+		p1.Name = "A";
+		p2.Name = "B";
+		Dictionary<Person, string> dict2 = new Dictionary<Person, string>();
+		dict2[p1] = "First";
+		Console.WriteLine("Display");
+		Console.WriteLine(dict2[p1]);
+		p1.Name = "B";
+		dict2.Remove(p1);
+		Console.WriteLine(dict2[p1]);
+		Console.WriteLine(dict2.ContainsKey(p2));
+		
+	}
+}
+
+class Person
+{
+	public string Name;
+	public override bool Equals(object obj)
+	{
+		Person p = obj as Person;
+		return Name == p.Name;
+//		return true;
+	}
+	
+	public override int GetHashCode()
+	{
+		return Name.GetHashCode();
+		//return base.GetHashCode();
+	}
+}
