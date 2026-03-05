@@ -1,0 +1,73 @@
+using System;
+					
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		RemoveZeros rz = new RemoveZeros();
+		int[] nums = [0,1,0,3,12];
+		int[] newNums = rz.MoveZeros(nums);
+		foreach(var i in newNums)
+		{
+			Console.WriteLine(i);
+		}
+	}
+}
+class RemoveZeros
+{
+	public int[] MoveZeros(int[] nums)
+	{
+		int j = 0;
+		for(int i = 0; i < nums.Length; i++)
+        {
+            if(nums[i] != 0)
+            {
+                nums[j] = nums[i];
+                j++;
+            }
+        }
+		 // Step 2: fill remaining positions with zeros
+        for(int i = j; i < nums.Length; i++)
+        {
+            nums[i] = 0;
+        }
+		return nums;		
+	}
+}
+
+/*
+class RemoveZeros
+{
+	public int[] MoveZeros(int[] nums)
+	{
+		int j = 0;
+		for(int i =0; i<nums.Length; i++)
+		{
+			if(nums[i] == 0)
+			{
+				j++;
+			}
+		}
+		for(int k =0; k<=j; k++)
+		{
+			zeroLogic(nums);
+		}
+		return nums;
+	}
+	
+	public int[] zeroLogic(int[] nums)
+	{
+		for(int i=0; i<nums.Length-1; i++)
+		{
+			int temp = 0;
+			if(nums[i] == 0)
+			{
+				temp = nums[i+1];
+				nums[i+1] = nums[i];
+				nums[i] = temp;
+			}
+		}
+		return nums;
+	}
+}*/
