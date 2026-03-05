@@ -1,0 +1,81 @@
+using System;
+					
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		RotateArray ra = new RotateArray();
+		int[] newA = [1,2,3,4];
+		int num = 6;
+		int[] resp = ra.RotateIntArray(newA,num);	
+		
+		foreach(var a in resp)
+		{
+			Console.WriteLine(a);
+		}
+	}
+}
+
+class RotateArray
+{
+	public int[] RotateIntArray(int[] numArray, int num)
+	{
+		if (num == 0)
+		{
+			return numArray;
+		}
+		
+		if(numArray.Length == num)
+		{
+			return numArray;
+		}
+		
+		int newNum = 0;
+		if(numArray.Length < num)
+		{
+			newNum = num % numArray.Length;
+		}
+		
+		int newLen = 0;
+		if(numArray.Length < num)
+		{
+			newLen = newNum;
+		}
+		else{
+			newLen = num;
+		}
+		
+		Console.WriteLine($"newLen: {newLen}");
+		int[] newArray = new int[numArray.Length];
+		for(int i=1; i<=newLen; i++)
+		{
+			if(i==1)
+			{				
+				newArray = Rotate(numArray);			
+			}
+			else
+			{
+				newArray = Rotate(newArray);
+			}
+		}
+		return newArray;
+	}
+	
+	public int[] Rotate(int[] nums)
+	{
+		int[] newArray = new int[nums.Length];
+		for(int j=0; j<nums.Length; j++)
+		{			
+			if(j+1<nums.Length)
+			{	
+				newArray[j] = nums[j+1];
+			}
+			else{
+				newArray[j] = nums[0];
+			}
+		}
+		return newArray;
+	}
+		
+}
