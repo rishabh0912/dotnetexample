@@ -1,0 +1,445 @@
+1️⃣ Delegate Definition
+
+A delegate is a type-safe function pointer that stores a reference to a method.
+
+It allows:
+	•	passing methods as parameters
+	•	callbacks
+	•	event handling
+	•	flexible runtime behavior
+
+Syntax
+public delegate int Operation(int a, int b);
+Usage
+static int Add(int a, int b)
+{
+    return a + b;
+}
+
+Operation op = Add;
+
+int result = op(2,3);
+
+2️⃣ Delegate as Parameter (Strategy Pattern)
+Delegates allow dynamic behavior injection.
+
+public static int Calculate(int a, int b, Operation op)
+{
+    return op(a,b);
+}
+
+Usage
+Calculate(5,3,Add);
+Calculate(5,3,Multiply);
+
+3️⃣ Built-in Delegates
+Instead of custom delegates we use Action, Func, Predicate.
+Delegate          Return          Example
+Action            void            logging
+Func              returns value    LINQ
+Predicate         bool            filtering
+
+
+Action
+Action log = () => Console.WriteLine("Logging");
+
+log();
+
+With parameter
+Action<string> log = msg => Console.WriteLine(msg);
+
+Func
+Func<int,int,int> add = (a,b) => a + b;
+
+int result = add(5,3);
+
+Used heavily in LINQ
+numbers.Select(x => x * 2);
+
+Predicate
+
+Used for boolean checks
+Predicate<int> isEven = x => x % 2 == 0;
+Example
+numbers.Find(x => x % 2 == 0);
+
+4️⃣ Lambda Expressions
+
+Short syntax to write delegates.
+
+Syntax
+parameters => expression
+
+Examples
+x => x * 2
+(a,b) => a + b
+
+Multi-line lambda
+(a,b) =>
+{
+    int result = a + b;
+    return result;
+}
+
+Equivalent to:
+int Add(int a,int b)
+{
+ return a + b;
+}
+
+5️⃣ Delegates in Sorting
+
+Example
+numbers.Sort((a,b) => a - b);
+Sort expects comparison delegate.
+
+Return meaning
+Return Value          Meaning
+< 0                   a before b
+0                     equal
+
+6️⃣ Multicast Delegates
+
+Delegates can hold multiple methods.
+
+notify += SendEmail;
+notify += SendSMS;
+notify += Log;
+
+Execution order
+SendEmail()
+SendSMS()
+Log()
+
+Internally delegate keeps Invocation List.
+
+7️⃣ Events
+
+Events are delegates with restricted access.
+
+Instead of:
+public Notify notify;
+Use:
+public event Notify Completed;
+External classes can only:
++= subscribe
+-= unsubscribe
+
+They cannot invoke the event.
+
+Only the publisher class can raise it.
+
+8️⃣ Event Example
+
+Publisher
+public class Process
+{
+    public event Action Completed;
+
+    public void Start()
+    {
+        Console.WriteLine("Processing");
+
+        Completed?.Invoke();
+    }
+}
+Subscriber
+Process p = new Process();
+
+p.Completed += SendEmail;
+p.Completed += Log;
+
+
+9️⃣ ASP.NET Core Real Example
+
+Delegates power middleware pipeline.
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("Before request");
+
+    await next();
+
+    Console.WriteLine("After request");
+});
+
+Middleware internally uses delegate:
+RequestDelegate(HttpContext context)
+Pipeline
+Middleware1 → Middleware2 → Middleware3
+Each middleware calls next() delegate.
+
+
+🔟 Where Delegates Are Used in .NET
+
+Feature                          Delegate Usage
+Events                           delegate-based
+LINQ                             Func
+Sorting                          Comparison delegate
+Task Parallel Library            callbacks
+ASP.NET Middleware               RequestDelegate
+Threading                        async callbacks
+1️⃣1️⃣ Common Interview Questions
+
+What is delegate?
+
+A delegate is a type-safe function pointer that stores references to methods and allows methods to be passed as parameters.
+
+Delegate vs Event
+
+Delegate                                              Event
+Function reference                                    Notification mechanism
+Can invoke anywhere                                   Only publisher can invoke
+Used for callbacks                                    Used for publisher-subscriber
+
+
+Why += in events?
+
+Because delegates support multicast invocation list.
+
+1️⃣2️⃣ Key Concepts to Remember
+
+✔ Delegates enable callback mechanism
+✔ Lambdas simplify delegate syntax
+✔ Delegates support multicast invocation
+✔ Events implement publisher–subscriber pattern
+✔ ASP.NET middleware pipeline is delegate based
+
+⭐ Ultimate One-Line Summary
+
+Delegates in C# are type-safe function pointers that allow methods to be passed and executed dynamically, 
+forming the foundation for events, LINQ, callbacks, and the ASP.NET middleware pipeline.
+
+============================================================================================================================
+          Main delegate calls
+============================================================================================================================
+
+
+using System;
+using System.Collections.Generic;
+					
+public delegate void MyDelegate();
+public delegate int AddDelegate(int a, int b);
+public delegate int Operations(int a, int b);
+public delegate void Notify();
+
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		MyDelegate del = SayHello;
+		del();
+		AddDelegate addd = AddMethod;
+		addd(1,3);
+		Console.WriteLine(Calculate(5,3,Add));
+		Console.WriteLine(Calculate(5,3,Multiply));	
+		Console.WriteLine(Calculate(5,3,(a,b)=>a%b));
+		Notify notif = SendEmail;
+		notif += SendSms;
+		notif();
+		Action greet = SayHello;
+		greet();
+		Action<string> greetn = SayHelloNew;
+		greetn("Rishabh");
+		Action<int, int> addN = AddNums;
+		addN(1,10);
+		Process(() => Console.WriteLine("Processing data"));
+		Process(SendSms);
+		Execute(SaveUser);
+		Operations op = (a,b) => a+b;
+		Console.WriteLine(op(44,2));
+		List<int> numbers = new List<int> {10,22,3};
+		numbers.Sort((a,b)=>b-a);
+		foreach(var i in numbers)
+		{
+			Console.WriteLine(i);
+		}
+	}
+	
+	public static void SayHello()
+	{
+		Console.WriteLine("Gellow");
+	}
+	
+	public static void SayHelloNew(string name)
+	{
+		Console.WriteLine($"Hello {name} !!!");
+	}
+	
+	public static void AddNums(int a, int b)
+	{
+		Console.WriteLine($"{a} + {b} is {a+b}");
+	}
+	
+	public static int AddMethod(int x, int y)
+	{
+		Console.WriteLine($"Print {x} + {y} is {x+y}");
+		return x+y;
+	}
+	
+	public static int Calculate(int a, int b, Operations op)
+	{
+		return op(a,b);
+	}
+	
+	public static int Add(int x, int y)
+	{
+		return x + y;
+	}
+	
+	public static int Multiply(int x, int y)
+	{
+		return x * y;
+	}
+	
+	public static void SendEmail()
+	{
+		Console.WriteLine("Send email");
+	}
+	
+	public static void SendSms()
+	{
+		Console.WriteLine("Send sms");
+	}
+	
+	public static void Process(Action action)
+	{
+		Console.WriteLine("Process started");
+		action();
+		Console.WriteLine("Process end");
+	}
+	
+	public static void Execute(Action action)
+	{
+		Console.WriteLine("Logging started");
+		action();
+		Console.WriteLine("Logging end");
+	}
+	
+	public static void SaveUser()
+	{
+		Console.WriteLine("Save user");
+	}
+}
+
+============================================================================================================================
+        Without events
+============================================================================================================================
+
+
+using System;
+
+public delegate void Notify();
+
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		Process p = new Process();
+	//	p.notify = p.SendEmail;
+		p.notify = null;
+		p.Start();
+	}
+}
+
+public class Process
+{
+	public Notify notify;
+	
+	public void Start()
+	{
+		Console.WriteLine("Process started");
+		notify();
+	}
+	public void SendEmail()
+	{
+		Console.WriteLine("Send email");
+	}
+	
+}
+
+============================================================================================================================
+        With events
+============================================================================================================================
+
+
+using System;
+					
+public delegate void Notify();
+
+public class Program
+{
+	public static void Main()
+	{
+		
+		Console.WriteLine("Hello World");
+		Process p = new Process();
+		p.notify += p.SendEmail;
+		p.notify += p.FinishProcess;
+		p.Start();
+		p.notify -= p.FinishProcess;
+		p.Start();		
+	}
+}
+
+public class Process
+{
+	public event Notify notify;
+	
+	public void Start()
+	{
+		Console.WriteLine("Start process");
+		notify();
+	}
+	
+	public void SendEmail()
+	{
+		Console.WriteLine("Send Email");
+	}
+	
+	public void FinishProcess()
+	{
+		Console.WriteLine("Finish Process");
+	}
+}
+
+============================================================================================================================
+         event real example
+============================================================================================================================
+
+using System;
+					
+public delegate void ProcessCompletedHandler(object Sender, EventArgs e);
+
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Hello World");
+		Process p = new Process();
+		p.Completed += p.OnProcessingCompleted;
+		p.Run();
+		
+	}
+}
+
+class Process
+{
+	public event ProcessCompletedHandler Completed;
+	
+	public void Run()
+	{
+		Console.WriteLine("Processing......");
+		
+		Completed(this, EventArgs.Empty);
+	}
+	
+	public void OnProcessingCompleted(object Sender, EventArgs e)
+	{
+		Console.WriteLine("Processing Completed");
+	}
+}
+
+
