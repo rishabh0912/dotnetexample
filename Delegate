@@ -441,5 +441,77 @@ class Process
 		Console.WriteLine("Processing Completed");
 	}
 }
+============================================================================================================================
+         questions
+============================================================================================================================
+
+1️⃣ Why Events Can Cause Memory Leaks
+
+Events can cause memory leaks because the publisher holds a reference to the subscriber through the delegate invocation list. 
+If the subscriber does not unsubscribe, the garbage collector cannot collect it even if the object is no longer needed.
+
+2️⃣ Weak Events
+
+Weak events solve the memory leak problem.
+
+Normally events create a strong reference.
+Publisher → Subscriber
+
+With weak events, the reference becomes weak, meaning GC can still collect the subscriber.
+Publisher - - - > Subscriber
+         (weak reference)
+If subscriber is garbage collected:
+Publisher event invocation list cleaned automatically
+
+Where Weak Events Are Used
+
+Most common in:
+	•	WPF
+	•	UI frameworks
+	•	long-lived publishers
+
+Example class:
+WeakEventManager
+Used like:
+WeakEventManager<Publisher, EventArgs>
+    .AddHandler(publisher, "EventName", HandlerMethod);
+
+When Weak Events Are Needed
+
+Use them when:
+Publisher lifetime >> Subscriber lifetime
+Example:
+Application service → UI component
+Cache service → temporary listeners
+Global event bus
+
+Weak events use weak references so that the subscriber can still be garbage collected even if it forgets to unsubscribe from the event.
+
+3️⃣ Event vs Observer Pattern
+
+Many developers think they are the same, but events are actually a built-in implementation of the observer pattern.
+C# events are a language-level implementation of the observer pattern. 
+They allow publishers to notify multiple subscribers without knowing who they are, 
+implementing the publish–subscribe communication model.
 
 
+Interviewers often ask:
+
+When would you avoid events?
+
+Answer:
+
+Avoid events when:
+many-to-many communication
+distributed systems
+microservices
+cross-service communication
+
+Instead use
+Message queues
+Event bus
+Kafka
+Service Bus
+
+C# events implement the observer pattern using delegates. However, because events create strong references between publisher and subscriber, they can cause memory leaks if subscribers do not unsubscribe. 
+Weak events solve this by using weak references, allowing subscribers to be garbage collected.
