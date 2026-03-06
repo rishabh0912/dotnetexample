@@ -1,0 +1,4 @@
+Recursive calls are stored in the call stack. 
+Each recursive invocation creates a new stack frame containing parameters, local variables, and return information. 
+If recursion depth becomes too large, the stack can overflow, causing a StackOverflowException. 
+Heap memory is only used if objects are created inside the recursive method.
