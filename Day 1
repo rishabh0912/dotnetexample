@@ -1,0 +1,160 @@
+🔹 PART 1 (1.5 Hours) – C# Memory Fundamentals
+You are not just learning DS. You are learning how C# behaves internally.
+
+1️⃣ Stack vs Heap
+
+Study This (Conceptually Understand)
+	•	What goes on stack?
+	•	What goes on heap?
+	•	What happens when method is called?
+	•	What is call stack?
+
+Example to Try in Visual Studio
+
+class Program
+{
+    static void Main()
+    {
+        int x = 10;
+        Person p = new Person();
+        p.Age = 30;
+
+        Modify(x, p);
+
+        Console.WriteLine(x);      // ?
+        Console.WriteLine(p.Age);  // ?
+    }
+
+    static void Modify(int a, Person person)
+    {
+        a = 50;
+        person.Age = 100;
+    }
+}
+
+class Person
+{
+    public int Age;
+}
+
+Be able to explain:
+	•	Why x does not change
+	•	Why p.Age changes
+	•	Where each variable lives in memory
+
+If you cannot explain memory flow clearly → redo this.
+
+============================================================================================================================================
+
+2️⃣ Value vs Reference Types
+
+Study:
+	•	struct vs class
+	•	ref keyword
+	•	out keyword
+	•	boxing & unboxing
+
+Try This
+
+object obj = 5;   // boxing
+int num = (int)obj;  // unboxing
+
+Be ready to explain:
+	•	Why boxing allocates on heap
+	•	Why it impacts performance
+
+============================================================================================================================================
+
+3️⃣ String Interning & Immutability
+
+Study
+	•	Why string is immutable
+	•	What happens with:
+
+string s = "hello";
+s += "world";
+
+Try
+string a = "test";
+string b = "test";
+
+Console.WriteLine(Object.ReferenceEquals(a, b));
+Understand string pool.
+
+🔹 PART 2 (2 Hours) – Arrays & Strings Implementation
+Now coding. No theory.
+
+⸻
+
+Implement These Yourself (Do Not Use Built-in Shortcuts)
+
+1️⃣ Reverse Array (Manual swap)
+
+2️⃣ Two Sum (Using Dictionary)
+
+3️⃣ Rotate Array (K rotations)
+
+4️⃣ Reverse String
+
+5️⃣ Check Palindrome
+6️⃣ Move Zeroes
+
+After each problem ask:
+	•	Time complexity?
+	•	Space complexity?
+	•	Can I do better?
+	•	Is this in-place?
+
+🔹 PART 3 (45 Minutes) – Recursion & Stack Usage
+
+Implement:
+
+1️⃣ Factorial (recursive)
+
+2️⃣ Fibonacci (recursive + optimized)
+
+3️⃣ Reverse string recursively
+
+4️⃣ Sum of array recursively
+
+Then understand:
+	•	Each recursive call → new stack frame
+	•	Why deep recursion causes StackOverflowException
+
+Example to test (don’t crash system 😄):
+
+static void Test()
+{
+    Test();
+}
+Understand why it crashes.
+
+🔹 PART 4 (1–1.5 Hours) – Exact LeetCode List for Day 1
+
+Do ONLY these. Not random.
+
+🔹 Easy (Must Do)
+	1.	Two Sum
+	2.	Valid Palindrome
+	3.	Reverse String
+	4.	Move Zeroes
+	5.	Best Time to Buy and Sell Stock
+	6.	Contains Duplicate
+
+⸻
+
+🔹 If Time Left (Medium)
+	7.	Product of Array Except Self
+	8.	Longest Substring Without Repeating Characters
+
+These build strong hash + array understanding.
+
+🎯 What You Should Be Able to Answer Tonight
+
+After today you must confidently answer:
+	•	Difference between stack and heap
+	•	Why strings are immutable
+	•	What is boxing/unboxing
+	•	What happens in recursion memory-wise
+	•	Why dictionary lookup is O(1)
+	•	Space complexity of your solutions
