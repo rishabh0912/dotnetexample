@@ -1,0 +1,71 @@
+Thread 
+- Thread is a low-level OS execution unit
+- Managed manually
+- Heavyweight
+- Directly mapped to OS thread
+
+Task
+- Task is a higher-level abstraction
+- Managed by .NET runtime
+- Lightweight
+- Usually runs on ThreadPool
+
+Thread = Worker
+Task = Work assigned to a worker
+
+Thread - 
+OS creates new thread
+Thread starts
+Runs DoWork
+Thread ends
+
+Problems:
+	•	expensive to create
+	•	difficult lifecycle management
+	•	no built-in result handling
+
+
+Task - 
+Task scheduled
+ThreadPool picks thread
+Work executes
+Thread reused
+
+Benefits:
+	•	easier programming
+	•	automatic scheduling
+	•	integrates with async/await
+
+A Thread is a low-level OS execution unit used to run code concurrently, while a Task is a higher-level abstraction 
+representing asynchronous work. 
+Tasks are scheduled by the .NET TaskScheduler and usually executed on ThreadPool threads, making them more lightweight and efficient. 
+Tasks also integrate with async/await and provide better exception handling and result management compared to raw threads.
+
+using System.Threading;
+using System;
+using System.Threading.Tasks;
+
+class Program
+{
+	static void Main(string[] args){
+		Thread t = new Thread(Method1);
+		t.Start();
+		Thread t2 = new Thread(Method2);
+		t2.Start();
+		Task.Run(()=> Method1());
+	}
+	
+	static void Method1(){
+		for(int i =0;i<10;i++)
+		{
+			Console.WriteLine("Method1");
+		}
+	}
+	
+	static void Method2(){
+		for(int j =0;j <10;j++){
+			Console.WriteLine("Method2");
+		}
+	}
+}
+	
