@@ -41,6 +41,9 @@ representing asynchronous work.
 Tasks are scheduled by the .NET TaskScheduler and usually executed on ThreadPool threads, making them more lightweight and efficient. 
 Tasks also integrate with async/await and provide better exception handling and result management compared to raw threads.
 
+TaskScheduler is a .NET runtime component responsible for scheduling tasks for execution. 
+By default, it schedules tasks on the ThreadPool through TaskScheduler.Default, which efficiently manages and reuses threads
+
 using System.Threading;
 using System;
 using System.Threading.Tasks;
