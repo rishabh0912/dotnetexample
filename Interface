@@ -1,0 +1,7 @@
+The diamond problem occurs when multiple parent classes provide implementations of the same method.
+Traditional interfaces only define method signatures and do not provide implementations, so there is no ambiguity. 
+The implementing class provides the single concrete implementation, which resolves the conflict.
+
+In C#, we avoid multiple inheritance by using composition and interfaces. 
+Instead of inheriting behavior from multiple base classes, we inject required services like logging or caching using dependency injection.
+This follows the composition-over-inheritance principle and leads to loosely coupled and testable systems.
