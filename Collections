@@ -53,3 +53,13 @@ When to Use Stack
     Main()
     → FunctionA()
       → FunctionB()
+
+Array vs ArrayList
+
+int[] intNum = new int[3];
+ArrayList listNum = new ArrayList();
+Array -> Size fixed and strong type safety -> as we give size and type while declaring the araay
+ArrayList -> Size dynamic and weak type safety -> we dont give size and type while declaring the array list
+
+Because ArrayList stores elements as object, which causes boxing/unboxing and requires casting.
+Generic collections like List provide type safety and better performance.
