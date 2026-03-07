@@ -1,0 +1,260 @@
+1. Why async/await exists
+
+Async programming allows applications to perform non-blocking operations, especially for I/O tasks like:
+	•	Database calls
+	•	HTTP calls
+	•	File operations
+
+Without async:
+Thread → waits for DB
+Thread → blocked
+
+With async:
+Thread → start DB call
+Thread → returned to thread pool
+DB completes → continuation runs
+
+Async does not make code faster. It improves scalability and throughput.
+
+2. Task (Foundation of async)
+
+In .NET async operations return Task.
+
+A Task represents future work.
+
+Task types
+
+Task - No return value.
+Task SaveDataAsync()
+Task - Returns a value later.
+Task<int> GetUserIdAsync()
+
+3. async keyword
+
+async does not make the method asynchronous.
+
+It only allows use of await.
+
+Example:
+public async Task<int> GetDataAsync()
+{
+    var data = await GetFromDbAsync();
+    return data;
+}
+
+4. await keyword
+
+await means:
+
+Pause the method until the Task completes without blocking the thread.
+
+Flow:
+Start method
+   |
+await async operation
+   |
+Thread released
+   |
+Task completes
+   |
+Method resumes
+
+5. What the compiler does (Async State Machine)
+
+The compiler converts async methods into a state machine.
+
+Conceptually:
+state = 0 → start task
+state = 1 → resume after await
+
+The compiler generates something like:
+MoveNext()
+{
+   if(state == 0)
+   {
+       start task
+       if(not complete)
+       {
+           save state
+           return
+       }
+   }
+
+   if(state == 1)
+   {
+       continue execution
+   }
+}
+
+Async methods are compiled into state machines with continuations
+
+6. SynchronizationContext
+
+SynchronizationContext decides:
+
+Which thread runs the continuation after await
+
+Example:
+await GetDataAsync();
+UpdateUI();
+
+Console App = ThreadPool
+ASP.NET Core = ThreadPool
+WPF/WinForms = UI Thread
+
+UI thread
+   |
+await API call
+   |
+UI thread released
+   |
+Task completes
+   |
+Continuation posted to UI thread
+
+7. ConfigureAwait(false)
+
+await GetDataAsync().ConfigureAwait(false);
+
+Meaning:
+
+Do not capture SynchronizationContext.
+
+Benefits:
+	•	avoids deadlocks
+	•	improves performance
+	•	used in library code
+
+Important:
+ConfigureAwait(false)
+ONLY affects SynchronizationContext
+
+8. ExecutionContext
+
+ExecutionContext flows runtime environment data across threads.
+
+It carries:
+	•	AsyncLocal values
+	•	Security context
+	•	Culture
+	•	Logical call context
+
+Example:
+AsyncLocal<string> user = new AsyncLocal<string>();
+user.Value = "Admin";
+
+Even if code runs on another thread:
+Task.Run(() => Console.WriteLine(user.Value));
+Output still:
+Admin
+Because ExecutionContext flows the value.
+
+
+9. ExecutionContext vs SynchronizationContext
+ExecutionContext
+  - Purpose
+    - Flows Data 
+  - Handles
+    - AsyncLocal, security, culture
+  - Concerns
+    - data flow
+
+SynchornizationContext
+  - Purpose
+    - Controls Thread
+  - Handles
+    - continuation scheduling
+  - Concerns
+    - thread affinity
+
+ExecutionContext = backpack (data)
+SynchronizationContext = GPS (where to run)
+
+10. Task.WhenAll
+
+Used for parallel async execution.
+
+Sequential:
+await A();
+await B();
+await C();
+
+Time:
+A + B + C
+
+Parallel:
+var t1 = A();
+var t2 = B();
+var t3 = C();
+
+await Task.WhenAll(t1,t2,t3);
+Time:
+max(A,B,C)
+
+Much faster for independent tasks.
+
+11. async void vs async Task
+
+Bad:
+async void Method()
+
+Good:
+async Task Method()
+Reason:
+	•	cannot await async void
+	•	exceptions crash process
+
+async void is used only for event handlers
+
+12. Deadlock scenario
+
+Bad code:
+var result = GetDataAsync().Result;
+Flow:
+Main thread waits
+Async continuation needs same thread
+Thread blocked
+Deadlock
+
+Solution:
+await GetDataAsync();
+
+13. Important Internal Flow
+
+When await happens:
+1 Capture ExecutionContext
+2 Capture SynchronizationContext
+3 Run async operation
+4 Task completes
+5 Restore ExecutionContext
+6 Schedule continuation using SynchronizationContext
+
+14. Thread usage in async
+
+Important:
+async/await does NOT create new threads
+Threads are used only when needed.
+
+Example I/O flow:
+await HTTP call
+   |
+OS handles request
+   |
+Completion callback
+   |
+ThreadPool executes continuation
+
+15. Complete Mental Model
+Task = future work
+async = enables await
+await = pause method without blocking thread
+Compiler = creates state machine
+ExecutionContext = carries data
+SynchronizationContext = decides continuation thread
+Task.WhenAll = parallel async execution
+
+Async/await in C# is used for writing non-blocking asynchronous code. 
+Async methods return Task or Task, and when an await is encountered the method pauses without blocking the thread. 
+The compiler converts async methods into state machines that resume execution when the awaited task completes.
+ExecutionContext flows runtime data such as AsyncLocal values across threads, 
+while SynchronizationContext determines where continuations run, such as returning to the UI thread in desktop applications.
