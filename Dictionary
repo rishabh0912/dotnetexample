@@ -119,6 +119,12 @@ During lookup, the dictionary computes the hash again to locate the bucket and t
 If GetHashCode() and Equals() are inconsistent, lookups can fail. 
 Also, dictionary keys should be immutable because changing a key’s state can change its hash and make the entry unreachable.
 
+ConcurrentDictionary is a thread-safe collection in .NET that allows multiple threads to read and write concurrently 
+without requiring external locks. 
+It achieves high performance through fine-grained locking and lock-free techniques. 
+It provides atomic operations such as GetOrAdd, AddOrUpdate, and TryAdd, which are commonly used in 
+caching and parallel processing scenarios.
+
 
 
 using System;
@@ -169,5 +175,45 @@ class Person
 	{
 		return Name.GetHashCode();
 		//return base.GetHashCode();
+	}
+}
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+					
+public class Program
+{
+	static ConcurrentDictionary<int, string> dict = new ConcurrentDictionary<int, string>();
+	static ConcurrentDictionary<int, string> dict2 = new ConcurrentDictionary<int, string>();
+	static ConcurrentDictionary<string, int> dict3 = new ConcurrentDictionary<string, int>();
+	public static void Main()
+	{
+		Parallel.For(0,1000, i =>
+					 {
+						 dict.TryAdd(i, "Value" + i);
+					 });
+		Console.WriteLine(dict.Count);
+		
+		Parallel.For(0,10, i =>
+					 {
+						 var Nvalue = dict2.GetOrAdd(1, k =>
+													 {
+														 Console.WriteLine("Creating value.....");
+														 return "Expensive data";
+													 });
+						 Console.WriteLine(Nvalue);
+					 });
+		
+		string[] words = { "apple", "banana", "apple", "orange", "banana" };
+		Parallel.ForEach(words, word => 
+					 {
+						 dict3.AddOrUpdate(word,1,(key, oldValue) => oldValue + 1);
+					 });
+		foreach(var i in dict3)
+		{
+			Console.WriteLine($" value for key {i.Key} is {i.Value}");
+		}
 	}
 }
