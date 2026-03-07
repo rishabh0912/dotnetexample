@@ -1,0 +1,55 @@
+.NET collections are mainly divided into two categories:
+
+Non-Generic Collections
+  - System.Collections
+    - ArrayList, HashTable, Stack, Quue
+Generic Collection
+  - System.Collections.Generic
+    - List<T>, Dictionary<TKey, TValue>, Stack<T>, Queue<T>, LinkedList<T>
+
+Benefits of Generic Collections
+- Type Safety - No runtime casting errors
+- Performance - No boxing/unboxing
+- Cleaner Code - Strong typing
+
+1. List<T>
+List<T> is an array-based dynamic collection.
+List<int> numbers = new List<int>();
+numbers.Add(10);
+numbers.Add(20);
+numbers.Add(30);
+
+Memory is contiguous like an array.
+When to Use List<T>
+- Fast Indexing
+- Mostly reading data - ECommerce, API Response
+
+2. LinkedList<T>
+LinkedList<T> is node based.
+10 ↔ 20 ↔ 30 ↔ 40
+When to Use LinkedList
+- Use it when you have frequent insertions or removals in the middle.
+
+Real World
+- LRU Cache (Least Recently Used)
+- Undo/Redo systems
+
+3. Queue<T>
+Queue follows FIFO (First In First Out).
+When to Use Queue
+- Use it for processing tasks in order.
+- Real world
+  - Job Processing System
+  - Request Buffering - API Gateway, rate limiter
+  - Breadth First Search
+
+4. Stack<T>
+Stack follows LIFO (Last In First Out).
+When to Use Stack
+- Use when the most recent item must be processed first.
+- Real world
+  - Undo operation
+  - Function call
+    Main()
+    → FunctionA()
+      → FunctionB()
