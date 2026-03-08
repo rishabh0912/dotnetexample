@@ -6,3 +6,7 @@ The concept of boxing and unboxing underlies the C# unified view of the type sys
 in which a value of any type can be treated as an object.
 
 Avoid boxing by using generic collections (List<T>, Dictionary<TKey,TValue>) instead of non-generic collections (ArrayList, Hashtable).
+
+Boxing converts a value type into an object, which requires allocating a new object on the heap and copying the value. 
+This increases memory allocations and GC pressure. 
+In high-performance systems where operations occur millions of times, excessive boxing can significantly degrade performance
