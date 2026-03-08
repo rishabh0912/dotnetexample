@@ -1,0 +1,102 @@
+1. Find the process Id
+      dotnet-counters ps
+        12345  MyWebApi
+        67890  dotnet
+      Use 12345 for all commands below.
+
+2. dotnet-counters → Quick Health Check (Live Metrics)
+
+    Install 
+    dotnet tool install --global dotnet-counters
+
+    Monitor runtime metrices
+    dotnet-counters monitor -p 12345
+
+    This shows live:
+  	•	CPU usage
+	  •	GC activity
+	  •	memory
+	  •	threadpool
+	  •	exceptions
+
+    Example
+    CPU Usage (%)
+    GC Heap Size (MB)
+    Gen 0 GC Count
+    ThreadPool Queue Length
+    Exception Count
+
+    Monitor only runtime counters (cleaner output)
+    dotnet-counters monitor -p 12345 System.Runtime
+
+    Collect counter for specific duration
+    dotnet-counters collect -p 12345 --duration 00:00:30
+
+3. dotnet-trace → Deep CPU / Performance Analysis
+
+   Install
+    dotnet tool install --global dotnet-trace
+
+   Collect trace
+    dotnet-trace collect -p 12345
+
+    This records:
+  	•	CPU stacks
+	  •	method execution
+	  •	thread activity
+	  •	GC events
+
+    It produces a file:
+    trace.nettrace
+
+    Collect trace for 30 secs
+    dotnet-trace collect -p 12345 --duration 00:00:30
+
+4. dotnet-dump → Memory Leak Debugging
+
+   Install
+   dotnet tool install --global dotnet-dump
+
+    Capture memory dump
+    dotnet-dump collect -p 12345
+
+    Creates
+    core_12345.dmp
+    This is a snapshot of the process memory.
+
+    Analyze dump
+    dotnet-dump analyze core_12345.dmp
+
+    Commands for analyze
+    clrstack
+    dumpheap
+    dumpheap -stat
+    gcroot
+
+5. Typical Production Debug Workflow
+
+    When debugging a slow API:
+    Step 1 — Check health
+
+    dotnet-counters monitor -p <pid>
+
+    Look for:
+  	•	high CPU
+	  •	high GC
+	  •	threadpool queue
+
+    Step 2 — If CPU is high
+    dotnet-trace collect -p <pid> --profile cpu-sampling
+
+    Find slow methods.
+
+    Step 3 — If memory keeps growing
+    dotnet-dump collect -p <pid>
+    dotnet-dump analyze <dumpfile>
+
+    Find leaking objects.
+
+dotnet-counters          -> live runtime health
+dotnet-trace             -> CPU & execution profiling
+dotnet-dump              -> memory investigation
+
