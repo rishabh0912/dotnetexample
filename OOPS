@@ -1,0 +1,104 @@
+Encasulation
+Encapsulation is about hiding internal data and exposing controlled access through method or properties
+Goal is to protect object state and maintain invariants
+
+1. Data Protection
+2. Maintainability
+3. Loose Coupling
+4. Enforcing Business rules
+
+Encapsulation means hiding the internal data state and exposing the controlled access through public methods or properties, ensuring data
+integrity and loose coupling.
+
+It applies at multiple architecture level
+- Class Level
+- Module Level
+- Microservice Level
+- API Boundaries
+
+Service hides database schema
+Client only use API
+
+Encapsulation is the principle of bundling data and methods that operate on that data within a class while restricting direct access to
+the internal state. This is typcially achieved using access modifiers like private and exposing controlled access through method or 
+properties. The goal is to protect the data integrity, enforce business rules and reduce coupling between components
+
+Encapsulation ensures that all state changes go through controlled methods, which allow us to enforce invariants and apply concurrency 
+control mechanism to protect them.
+
+Domain objects should live in the Domain layer and should not depend on application or infrastructure layers.
+Application services orchestrate domain entities, while infrastructure provides implementations like repositories.
+
+Encapsulation helps by hiding internal implementation details behind service interfaces or APIs. 
+Clients interact with the service through well-defined contracts while the internal data models, database schema, and business logic remain private.
+This reduces coupling, allows services to evolve independently, and ensures that domain invariants are enforced through controlled operations.
+
+Public fields allow unrestricted access to an object’s internal state. 
+This bypasses validation logic and can violate domain invariants. 
+Encapsulation solves this by keeping fields private and exposing controlled methods that enforce business rules and maintain data integrity.
+
+Abstraction
+Abstraction is the process of hiding implementation complexity and exposing only the essential behavior of an object through well defined
+interfaces.
+It allows developers to interact with a system at a high level without worrying about internal complexity, 
+which reduces coupling and improves maintainability.
+"User knows what the system does, not how it does it"
+
+- Reduces Complexity
+- Loose Coupling
+- Replace implementation easily
+
+Abstraction vs Encapsulation
+Encapsulation is about hiding internal state and protecting the data, and exposing controlled access via method or properties
+Abstraction is about hiding the implementation complexity and exposing the essential behavior of the object
+Abstraction defines what an object can do, while encapsulation defines how its internal state is protected.
+
+We should avoid abstraction when there is only a single implementation and no foreseeable variation. 
+Premature abstraction can introduce unnecessary complexity and make the system harder to understand.
+
+An interface defines a contract that specifies what behavior a class must implement, without providing implementation details. 
+An abstract class can provide both abstract methods and shared implementation, making it useful when multiple classes share common behavior.
+
+What “protect change points” means
+
+When designing libraries or frameworks, abstraction should hide parts of the system that may change frequently.
+Abstraction isolates parts of the system that change.So when the implementation changes:consumers DO NOT change
+
+Inheritance
+Inheritance is an object-oriented principle where a class derives from another class and inherits its properties and behavior. 
+It allows code reuse and enables hierarchical relationships between classes. 
+Inheritance is typically used to model “is-a” relationships and also enables polymorphism through method overriding.
+
+While inheritance enables reuse, modern design often prefers composition over inheritance to reduce tight coupling and increase flexibility.
+
+Inheritance can break encapsulation because subclasses gain access to internal behavior and may rely on implementation
+details of the base class. If the base class changes internally, subclasses that depend on those details may break.
+Type of inheritance
+- Single Inheritance
+- Multilevel Inheritance
+- Hierarchal Inheritance
+- Mutliple Inheritance (via Interfaces)
+
+Polymorphism
+Polymorphism is a ability of a object to take multiple forms, where the same interface or method can exhibit different behavior depending
+upon the underlying object.
+It is typically achieved through method overloading at compile time and method overriding at runtime, 
+enabling flexible and extensible system design.
+
+Runtime Polymorphism - Method Overriding - Interface + virtual/override
+Compiletime Polymorphism - Method Overloading
+
+Virtual dispatch works using a virtual method table (VTable). 
+Each class with virtual methods maintains a table containing pointers to the method implementations. 
+When a virtual method is called, the CLR looks up the actual object type at runtime and resolves the method from the VTable,
+ensuring the correct overridden implementation is executed.
+
+Inheritance allows a class to derive behavior from another class, representing an “is-a” relationship, 
+while composition involves building classes using other objects, representing a “has-a” relationship. 
+Inheritance can lead to tight coupling and fragile hierarchies, whereas composition promotes loose coupling and flexibility. 
+Modern systems typically favor composition over inheritance for better maintainability and extensibility.
+
+Dependency Injection is a design pattern where a class receives its dependencies from an external container rather than creating them itself. 
+In ASP.NET Core, services are registered in the DI container in Program.cs. 
+When a class is instantiated, the container automatically resolves and injects the required dependencies through the constructor. 
+This promotes loose coupling, better testability, and easier maintenance.
