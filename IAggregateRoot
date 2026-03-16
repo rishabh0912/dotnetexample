@@ -1,0 +1,53 @@
+IAggregateRoot simply marks the entry point to a group of domain objects, ensuring that all changes go through the root entity.
+
+Think of an aggregate like a bank account.
+BankAccount
+ ├─ Transactions
+ └─ Balance
+Only the root can change state:
+account.Deposit()
+account.Withdraw()
+
+Aggregates protect internal consistency.
+
+They do NOT manage external dependencies.
+
+External dependencies belong to:
+	•	Application services
+	•	Domain services
+	•	Infrastructure layer
+
+LoanCase (Aggregate Root)
+ ├─ LoanApplicant
+ ├─ LoanTerms
+ └─ PaymentSchedule
+Application Service:
+var rate = rateService.GetRate(fondskode);
+
+var loanCase = LoanCase.Create(
+    applicant,
+    amount,
+    rate
+);
+loanCaseRepository.Save(loanCase);
+
+It is usually just a marker interface:
+public interface IAggregateRoot
+{
+}
+It helps infrastructure code know:
+This entity is the root of an aggregate.
+Example repository rule:
+public interface IRepository<T>
+    where T : IAggregateRoot
+{
+    Task<T> Get(Guid id);
+    Task Save(T entity);
+}
+This prevents repositories like:
+LoanApplicantRepository ❌
+PaymentScheduleRepository ❌
+Only this is allowed
+LoanCaseRepository ✅
+
+loanCaseRepository.Save(loanCase);
