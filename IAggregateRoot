@@ -51,3 +51,12 @@ Only this is allowed
 LoanCaseRepository ✅
 
 loanCaseRepository.Save(loanCase);
+
+==================================Code - Ecommerce====================================
+Category and Product are aggregate roots because they are main domain entities.
+Methods like DecreaseStock() exist because domain objects should enforce business rules and protect their own state.
+Why Methods Belong in the Domain Model
+This follows object-oriented design principles.
+Objects should contain:
+State (properties)
+Behavior (methods)
