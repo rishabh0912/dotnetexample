@@ -1,0 +1,8 @@
+1. Step to create the folder structure
+   ECommerce Application, Domain, Infrastructure ---- All are classlibs
+   ECommerce API --- Web API Project
+2. Next we created the Common Folder inside Domain
+3. Inside domain we created an abstract class that contains Id, CreatedAt, CreatedBy which will be used by all the classes
+    BaseEntity.cs
+4. Next we created IAggregateRoot.cs (Details in IAggregateRoot file)
+5. Next we created Products and Category domains - with properties and behavior (methods).
