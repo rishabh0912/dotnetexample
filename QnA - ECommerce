@@ -1,0 +1,48 @@
+1. Why we created domain first
+a. Clean Architecture Principle: Dependency Rule
+┌─────────────────────────────────┐
+│         API Layer               │  ← Depends on ↓
+├─────────────────────────────────┤
+│    Infrastructure Layer         │  ← Depends on ↓
+├─────────────────────────────────┤
+│    Application Layer            │  ← Depends on ↓
+├─────────────────────────────────┤
+│    Domain Layer (CORE)          │  ← Depends on NOTHING
+└─────────────────────────────────┘
+
+The Rule: Dependencies point INWARD only. Domain has ZERO dependencies.
+
+Why this matters:
+
+Domain = Pure business logic
+Domain doesn't know about databases, APIs, frameworks
+Domain can't accidentally depend on infrastructure
+Domain is the most stable layer (changes least)
+
+b. Inside-Out Development (Domain-Driven)
+Traditional Approach (Outside-In):
+Database → Repository → Service → Controller → Business Logic
+❌ Problem: Business logic becomes scattered
+
+Clean Architecture (Inside-Out):
+Domain → Application → Infrastructure → API
+✅ Benefit: Business logic is centralized and protected
+
+Core stability - Most important code (domain) is written first
+No framework coupling - Domain doesn't depend on EF Core, ASP.NET
+Testable - Domain logic can be tested without databases/APIs
+Flexible - Can swap databases, frameworks without touching domain
+
+I start with the Domain layer because it represents the core business logic and should have zero dependencies 
+on frameworks or infrastructure. This follows the Dependency Inversion Principle from Clean Architecture.
+
+By starting domain-first:
+1. Business logic is encapsulated in entities (rich domain model)
+2. Domain can be tested without databases or APIs
+3. Domain models aren't dictated by database constraints
+4. We can change infrastructure (swap PostgreSQL for MongoDB) without touching domain
+
+This is the 'inside-out' approach - build the most important, stable layer first, then build infrastructure to support it. 
+The opposite (database-first) often leads to anemic domain models where entities are just data bags and business logic is scattered.
+
+
