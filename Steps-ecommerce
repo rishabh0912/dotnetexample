@@ -6,3 +6,138 @@
     BaseEntity.cs
 4. Next we created IAggregateRoot.cs (Details in IAggregateRoot file)
 5. Next we created Products and Category domains - with properties and behavior (methods).
+6. Install below packages in Application
+# MediatR - For CQRS pattern (Commands & Queries)
+dotnet add src/ECommerce.Application/ECommerce.Application.csproj package MediatR
+
+# FluentValidation - For input validation
+dotnet add src/ECommerce.Application/ECommerce.Application.csproj package FluentValidation
+
+# FluentValidation DI extension
+dotnet add src/ECommerce.Application/ECommerce.Application.csproj package FluentValidation.DependencyInjectionExtensions
+MediatR: Implements mediator pattern for CQRS (separates Commands from Queries)
+FluentValidation: Validates request DTOs with clean, readable rules
+
+7. Install IApplicationDbContext in Application inside Interfaces
+8. We created Result.cs in Application -> Common -> Models
+   so basically this method we can call with any method like Task<Result<Product>> CreateProduct(string name, int quantity)
+   now here CreateProduct can have any input parameter that does not matter, it is basically the output type that is handled by result
+   so we get Result<Product>.Success or Result<Product>.Failure 
+
+// The INPUT parameters can be ANYTHING
+Task<Result<Product>> CreateProduct(string name, int quantity)
+Task<Result<Product>> CreateProduct(CreateProductRequest request)
+Task<Result<Product>> CreateProduct(Guid id, string name, decimal price, int stock)
+
+// What matters is the OUTPUT type: Result<Product>
+
+Key Points:
+
+1. Input = Flexible → Any parameters your method needs
+2. Output = Standardized → Always Result<T> or Result
+3. Caller knows → Must check .IsSuccess before using .Value
+
+Input → [Method Logic] → Output
+
+Any params     ↓         Result<T>.Success(data)
+you need    Business      OR
+           Logic       Result<T>.Failure(error)
+
+9. We created IApplicationDbContext in Application -> Common -> Interfaces
+Two Different Things:
+Interface IApplicationDbContext → Application Layer (abstraction)
+Implementation ApplicationDbContext → Infrastructure Layer (concrete class)
+
+┌─────────────────────────────────┐
+│    Application Layer            │  ← Defines WHAT it needs (interface)
+│    - IApplicationDbContext      │     "I need a way to save products"
+└─────────────────────────────────┘
+            ↑ implements
+            │
+┌─────────────────────────────────┐
+│    Infrastructure Layer         │  ← Provides HOW it's done (implementation)
+│    - ApplicationDbContext       │     "Here's EF Core implementation"
+│    - Uses EF Core               │
+│    - Runs migrations            │
+└─────────────────────────────────┘
+
+// File: src/ECommerce.Application/Common/Interfaces/IApplicationDbContext.cs
+namespace ECommerce.Application.Common.Interfaces;
+
+public interface IApplicationDbContext  // ← Interface (contract)
+{
+    DbSet<Product> Products { get; }
+    DbSet<Category> Categories { get; }
+    
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+}
+
+Says: "I need access to Products and Categories, and I need to save changes"
+Doesn't care: How it's stored (SQL, MongoDB, in-memory), how migrations work
+
+Infrastructure Layer (implements interface):
+
+// File: src/ECommerce.Infrastructure/Persistence/ApplicationDbContext.cs
+using ECommerce.Application.Common.Interfaces;  // ← Imports the interface
+using Microsoft.EntityFrameworkCore;
+
+namespace ECommerce.Infrastructure.Persistence;
+
+public class ApplicationDbContext : DbContext, IApplicationDbContext  // ← Implements interface
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+        : base(options)
+    {
+    }
+    
+    // Implement interface properties
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+    
+    // EF Core configuration
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
+    
+    // Implement interface method
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+}
+Says: "Here's the concrete implementation using EF Core and PostgreSQL"
+Benefits:
+
+✅ Application doesn't know about EF Core
+✅ Can test with mock/in-memory implementation
+✅ Can swap databases without changing Application code
+✅ Follows Dependency Inversion Principle
+
+Application Layer
+├── IApplicationDbContext.cs  ← Interface (contract)
+│   └── "I need Products, Categories, SaveChanges"
+│
+│   Handlers inject interface ↓
+│   
+└── CreateProductHandler.cs
+    public CreateProductHandler(IApplicationDbContext context)  ← Uses interface
+    {
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+    }
+
+                ↓ At runtime, DI provides implementation
+
+Infrastructure Layer
+└── ApplicationDbContext.cs  ← Concrete implementation
+    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    {
+        public DbSet<Product> Products => Set<Product>();
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // EF Core configuration for migrations
+        }
+    }
+
