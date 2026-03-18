@@ -1,0 +1,82 @@
+MediatR implements the mediator pattern to decouple request senders from their handlers. 
+Controllers send commands or queries to the mediator instead of calling services directly. 
+This improves separation of concerns, maintainability, and supports CQRS and pipeline behaviors for cross-cutting concerns 
+like logging and validation.
+
+Normally
+Controller → Service → Repository
+Example
+public class ProductController
+{
+    private readonly ProductService _service;
+
+    public ProductController(ProductService service)
+    {
+        _service = service;
+    }
+
+    public async Task<IActionResult> Create(CreateProductRequest request)
+    {
+        await _service.CreateProduct(request);
+        return Ok();
+    }
+}
+
+Problems:
+	•	Controller tightly coupled to service
+	•	Large services over time
+	•	Harder to maintain when logic grows
+
+
+2️⃣ With MediatR
+
+Instead of calling service directly:
+
+Controller → Mediator → Handler
+Example
+public async Task<IActionResult> Create(CreateProductCommand command)
+{
+    var id = await _mediator.Send(command);
+    return Ok(id);
+}
+
+Handler
+public class CreateProductCommandHandler 
+    : IRequestHandler<CreateProductCommand, Guid>
+{
+    public async Task<Guid> Handle(CreateProductCommand cmd, CancellationToken ct)
+    {
+        var product = new Product(cmd.Name, cmd.SKU);
+        await _repo.Add(product);
+        return product.Id;
+    }
+}
+
+Now:
+	•	Controller only knows Mediator
+	•	Business logic lives in handlers
+
+3️⃣ Key Benefits of MediatR
+
+1️⃣ Decoupling
+
+Controller does not depend on service classes.
+Controller → Mediator → Handler
+2️⃣ Separation of Concerns
+
+Each command/query has its own handler.
+
+Example:
+CreateProductCommandHandler
+UpdateProductCommandHandler
+DeleteProductCommandHandler
+
+3️⃣ Cleaner CQRS Architecture
+
+MediatR fits naturally with Command Query Responsibility Segregation (CQRS).
+Commands - 
+CreateProductCommand
+UpdateProductCommand
+Queries - 
+GetProductQuery
+GetProductsQuery
